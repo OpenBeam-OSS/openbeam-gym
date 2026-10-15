@@ -28,7 +28,8 @@ account = CloudAccount()                              # https://cloud.openbeam.w
 session = account.start_session()                     # a training session: no player tab needed
 game = CloudGame(account, session["session_id"]); game.wait_ready()
 
-env = OpenBeamRobotEnv(game, Reach(), SceneConfig(robot_file="openbeam_test_arm.truck"))
+# SceneConfig() installs and spawns the test arm (assets/openbeam_test_arm.zip) by URL.
+env = OpenBeamRobotEnv(game, Reach(), SceneConfig())
 obs, info = env.reset(seed=0)
 for _ in range(100):
     obs, reward, terminated, truncated, info = env.step(env.action_space.sample())
@@ -36,6 +37,12 @@ for _ in range(100):
         obs, info = env.reset()
 env.close()
 ```
+
+The default robot is the test arm in `assets/openbeam_test_arm.zip`, a JBeam
+vehicle mod that the game's `install_mod` takes as it is: no classic `.truck`
+format is needed. Any vehicle mod with an `openbeam_robot.json`
+(`openbeam-robot/1`) works the same way: set `SceneConfig(robot_file=...,
+install_url=..., install_sha256=...)`.
 
 No game at hand? `openbeam_gym.fake.FakeGame` is an in-process stand-in with
 the same tool surface (a rigid kinematic arm), for tests and dry runs:
@@ -84,7 +91,7 @@ env = OpenBeamRobotEnv(FakeGame(), Reach(), SceneConfig())
 ```sh
 python examples/train_ppo_reach.py --fake 4 --timesteps 60000          # no game
 python examples/train_ppo_reach.py --endpoint G0/agent-endpoint.json --endpoint G1/agent-endpoint.json \
-    --robot-file openbeam_test_arm.truck --control-hz 10 --tolerance 0.05 --episode-steps 50 --timesteps 50000
+    --control-hz 10 --tolerance 0.05 --episode-steps 50 --timesteps 50000
 ```
 
 Each run writes `curve.csv`, `model.zip` and `summary.json`. `examples/results/`

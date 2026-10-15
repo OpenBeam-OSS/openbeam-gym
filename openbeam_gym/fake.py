@@ -69,7 +69,7 @@ class FakeGame(GameClient):
         t = self.fk(self.q)
         return {"sim_time": self.sim_time, "physics_steps": self.steps, "frame": self.calls,
                 "sim_mode": "stepped" if self.stepped else "realtime",
-                "robot": {"instance_id": 1, "file": "openbeam_test_arm.truck", "source": "fake"},
+                "robot": {"instance_id": 1, "file": "openbeam_test_arm.jbeam", "source": "fake"},
                 "joints": [{"name": n, "position": float(q), "velocity": 0.0, "effort": None, "target": float(g)}
                            for n, q, g in zip(self.names, self.q, self.target)],
                 "base_pose": {"position": [0, 0, 0], "orientation": [0, 0, 0, 1], "frame": "world"},
@@ -101,7 +101,7 @@ class FakeGame(GameClient):
             return ToolResult({"outcome": "loaded"})
         if tool == "robot_info":
             return ToolResult({
-                "robot": {"instance_id": 1, "file": "openbeam_test_arm.truck"},
+                "robot": {"instance_id": 1, "file": "openbeam_test_arm.jbeam"},
                 "joints": [{"name": n, "limits": {"lower": float(l[0]), "upper": float(l[1])}}
                            for n, l in zip(self.names, self.limits)],
                 "end_effectors": [{"name": "tcp", "chain": list(self.names)}],

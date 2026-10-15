@@ -23,6 +23,13 @@ from .tasks import Reach, Task
 
 PHYSICS_DT = 0.0005
 
+# The default robot: the four-joint test arm, a JBeam vehicle mod published in
+# this repository (assets/openbeam_test_arm.zip, built by
+# openbeam_gym/robots/build_test_arm.py). install_mod takes it as it is.
+TEST_ARM_FILE = "openbeam_test_arm.jbeam"
+TEST_ARM_URL = "https://raw.githubusercontent.com/OpenBeam-OSS/openbeam-gym/main/assets/openbeam_test_arm.zip"
+TEST_ARM_SHA256 = "7fd51085c0ea5d6e51e92e624f61834fcfe7379424b0ff1e351d51f1410c0bf7"
+
 
 def quat_xyzw_to_matrix(q) -> np.ndarray:
     x, y, z, w = q
@@ -39,11 +46,11 @@ class SceneConfig:
 
     terrain: str | None = "simple2.terrn2"     # load_level {terrain}; None to keep whatever is loaded
     level_id: str | None = None                # or a BeamNG level id (load_level {level_id})
-    robot_file: str | None = None              # spawn_vehicle {file} when no robot is present
+    robot_file: str | None = TEST_ARM_FILE     # spawn_vehicle {file} when no robot is present
     robot_position: list | None = None         # world position for that spawn
     install_path: str | None = None            # install_mod {path} before spawning (local games)
-    install_url: str | None = None             # or install_mod {url, sha256} (cloud games)
-    install_sha256: str | None = None
+    install_url: str | None = TEST_ARM_URL     # or install_mod {url, sha256} (cloud games); None: already installed
+    install_sha256: str | None = TEST_ARM_SHA256
     spec: dict | None = None                   # robot_attach {spec} (an openbeam-robot/1 table)
     home: dict = field(default_factory=dict)   # joint name -> radians for reset; default mid-range
     settle_steps: int = 600                    # physics steps after moving to home (0.3 s)
@@ -126,7 +133,8 @@ class OpenBeamRobotEnv(gym.Env):
             elif self.scene.install_url:
                 self.game.call("install_mod", {"url": self.scene.install_url, "sha256": self.scene.install_sha256},
                                timeout=300)
-            args = {"file": self.scene.robot_file}
+            # Entered: stepped physics advances the player's actor.
+            args = {"file": self.scene.robot_file, "enter": True}
             if self.scene.robot_position:
                 args["position"] = self.scene.robot_position
             self.game.call("spawn_vehicle", args, timeout=120)

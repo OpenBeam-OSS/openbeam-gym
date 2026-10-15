@@ -3,7 +3,7 @@
 
 Local games (one per env), started here:
     python examples/train_ppo_reach.py --launch 2 --executable <build>/bin/RoR-Combined \
-        --mod openbeam_test_arm.zip --robot-file openbeam_test_arm.truck --timesteps 40000 --out runs/reach
+        --timesteps 40000 --out runs/reach
 
 Games you already started (ROR_AGENT_PORT) by endpoint file:
     python examples/train_ppo_reach.py --endpoint ~/g0/agent-endpoint.json --endpoint ~/g1/agent-endpoint.json ...
@@ -112,7 +112,7 @@ def main() -> None:
     ap.add_argument("--token-file", help="bearer token for --session-url (never printed)")
     ap.add_argument("--fake", type=int, default=0)
     ap.add_argument("--terrain", default="simple2.terrn2")
-    ap.add_argument("--robot-file")
+    ap.add_argument("--robot-file", help="default: the test arm, openbeam_test_arm.jbeam")
     ap.add_argument("--install-url", help="install_mod this archive URL before spawning (with --install-sha256)")
     ap.add_argument("--install-sha256")
     ap.add_argument("--robot-position", type=float, nargs=3)
@@ -128,9 +128,10 @@ def main() -> None:
     reach = dict(tolerance=args.tolerance, max_steps=args.episode_steps, range_fraction=args.range_fraction)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    scene = {"terrain": args.terrain, "robot_file": args.robot_file,
-             "robot_position": args.robot_position, "install_url": args.install_url,
-             "install_sha256": args.install_sha256}
+    # SceneConfig's defaults install and spawn the test arm; flags override them.
+    scene = {k: v for k, v in {"terrain": args.terrain, "robot_file": args.robot_file,
+                               "robot_position": args.robot_position, "install_url": args.install_url,
+                               "install_sha256": args.install_sha256}.items() if v is not None}
     processes = []
     if args.fake:
         fns = [functools.partial(env_fake, args.control_hz, args.seed + i, reach) for i in range(args.fake)]
