@@ -216,6 +216,24 @@ class LocalGame(GameClient):
         return (self.mcp.rpc("tools/list", {}) or {}).get("tools", [])
 
 
+class SessionGame(GameClient):
+    """One cloud session's game through its own MCP endpoint,
+    `{base_url}/v1/sessions/{session_id}/mcp`, with a bearer token that may
+    use it (the account's MCP access token, or a service credential)."""
+
+    def __init__(self, base_url: str, session_id: str, token_provider, timeout: float = 120.0):
+        self.session_id = session_id
+        self.mcp = HttpMcp(f"{base_url.rstrip('/')}/v1/sessions/{session_id}/mcp", token_provider, timeout=timeout)
+
+    def call(self, tool, arguments=None, raise_on_error=True, timeout=None) -> ToolResult:
+        started = time.perf_counter()
+        result = self.mcp.rpc("tools/call", {"name": tool, "arguments": arguments or {}}, timeout=timeout)
+        return _decode_tool_result(tool, result or {}, time.perf_counter() - started, raise_on_error)
+
+    def tools(self) -> list[dict]:
+        return (self.mcp.rpc("tools/list", {}) or {}).get("tools", [])
+
+
 class CloudAccount:
     """The account endpoint: cloud_session_* and cloud_game_call."""
 

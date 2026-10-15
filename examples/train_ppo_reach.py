@@ -37,7 +37,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from openbeam_gym import OpenBeamRobotEnv, Reach, SceneConfig
 from openbeam_gym.fake import FakeGame
 from openbeam_gym.launch import LocalGameProcess
-from openbeam_gym.mcp import CloudAccount, CloudGame, LocalGame
+from openbeam_gym.mcp import CloudAccount, CloudGame, LocalGame, SessionGame
 
 
 def env_from_endpoint(endpoint, scene, control_hz, seed, reach):
@@ -49,6 +49,14 @@ def env_from_endpoint(endpoint, scene, control_hz, seed, reach):
 
 def env_from_cloud(base_url, session_id, scene, control_hz, seed, reach):
     env = OpenBeamRobotEnv(CloudGame(CloudAccount(base_url), session_id), Reach(**reach), SceneConfig(**scene),
+                           control_hz=control_hz)
+    env.reset(seed=seed)
+    return Monitor(env, info_keywords=("is_success",))
+
+
+def env_from_session(base_url, session_id, token_file, scene, control_hz, seed, reach):
+    token = Path(token_file).expanduser().read_text().strip()
+    env = OpenBeamRobotEnv(SessionGame(base_url, session_id, lambda: token), Reach(**reach), SceneConfig(**scene),
                            control_hz=control_hz)
     env.reset(seed=seed)
     return Monitor(env, info_keywords=("is_success",))
@@ -100,6 +108,8 @@ def main() -> None:
     ap.add_argument("--sessions", type=int, default=1)
     ap.add_argument("--session-id", action="append", default=[])
     ap.add_argument("--base-url", default="https://cloud.openbeam.world")
+    ap.add_argument("--session-url", help="base URL whose /v1/sessions/<id>/mcp serves an existing session")
+    ap.add_argument("--token-file", help="bearer token for --session-url (never printed)")
     ap.add_argument("--fake", type=int, default=0)
     ap.add_argument("--terrain", default="simple2.terrn2")
     ap.add_argument("--robot-file")
@@ -121,6 +131,9 @@ def main() -> None:
     processes = []
     if args.fake:
         fns = [functools.partial(env_fake, args.control_hz, args.seed + i, reach) for i in range(args.fake)]
+    elif args.session_url:
+        fns = [functools.partial(env_from_session, args.session_url, sid, args.token_file, scene, args.control_hz,
+                                 args.seed + i, reach) for i, sid in enumerate(args.session_id)]
     elif args.cloud:
         account = CloudAccount(args.base_url)
         from openbeam_gym.vector import start_cloud_sessions
