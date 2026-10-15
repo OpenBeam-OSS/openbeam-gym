@@ -1,0 +1,144 @@
+{
+ "schema": "openbeam-robot/1",
+ "name": "so101",
+ "source": "OpenBeam SO-101 node model, URDF so101_new_calib",
+ "base_frame": {
+  "nodes": [
+   "base0",
+   "bfront",
+   "bleft"
+  ],
+  "offset": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "rotation": [
+   1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ]
+ },
+ "joints": [
+  {
+   "name": "shoulder_pan",
+   "axis": [
+    "pz0",
+    "pz1"
+   ],
+   "parent_ref": "bfront",
+   "child_ref": "s1",
+   "sign": -1.0,
+   "lower": -1.91986,
+   "upper": 1.91986,
+   "reference": 0.0
+  },
+  {
+   "name": "shoulder_lift",
+   "axis": [
+    "la",
+    "lb"
+   ],
+   "parent_ref": "s1",
+   "child_ref": "ea",
+   "sign": 1.0,
+   "lower": -1.74533,
+   "upper": 1.74533,
+   "reference": 0.0
+  },
+  {
+   "name": "elbow_flex",
+   "axis": [
+    "ea",
+    "eb"
+   ],
+   "parent_ref": "la",
+   "child_ref": "wa",
+   "sign": 1.0,
+   "lower": -1.69,
+   "upper": 1.69,
+   "reference": 0.0
+  },
+  {
+   "name": "wrist_flex",
+   "axis": [
+    "wa",
+    "wb"
+   ],
+   "parent_ref": "ea",
+   "child_ref": "rb",
+   "sign": 1.0,
+   "lower": -1.65806,
+   "upper": 1.65806,
+   "reference": 0.0
+  },
+  {
+   "name": "wrist_roll",
+   "axis": [
+    "ra",
+    "rb"
+   ],
+   "parent_ref": "w1",
+   "child_ref": "gl",
+   "sign": -1.0,
+   "lower": -2.74385,
+   "upper": 2.84121,
+   "reference": 0.0
+  },
+  {
+   "name": "gripper",
+   "axis": [
+    "ja",
+    "jb"
+   ],
+   "parent_ref": "gt",
+   "child_ref": "mt",
+   "sign": 1.0,
+   "lower": -0.174533,
+   "upper": 1.74533,
+   "reference": 0.0
+  }
+ ],
+ "end_effectors": [
+  {
+   "name": "gripper_frame_link",
+   "nodes": [
+    "ra",
+    "rb",
+    "ja"
+   ],
+   "offset": [
+    0.12936142049011704,
+    -0.007332685129943955,
+    -0.002947762805203291
+   ],
+   "rotation": [
+    2.6535897930715506e-06,
+    1.3376854262953943e-17,
+    0.9999999999964789,
+    -0.9171864570712803,
+    0.39845828258314425,
+    2.4338366207427053e-06,
+    -0.3984582825817413,
+    -0.9171864570745095,
+    1.0573448316397146e-06
+   ]
+  }
+ ],
+ "targets": {
+  "lua": "so101.setJoints"
+ },
+ "state": {
+  "position": "so101_{joint}_pos",
+  "velocity": "so101_{joint}_vel",
+  "effort": "so101_{joint}_effort",
+  "target": "so101_{joint}_target",
+  "limit": "so101_{joint}_limit"
+ }
+}

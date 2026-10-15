@@ -1,0 +1,62 @@
+{
+ "robot": {
+  "instance_id": 1,
+  "file": "openbeam_test_arm.truck",
+  "name": "OpenBeam Kinematics Test Arm",
+  "source": "rotators"
+ },
+ "joints": [
+  "base_pan",
+  "shoulder",
+  "elbow",
+  "wrist_roll"
+ ],
+ "effector": "tcp",
+ "stepped": {
+  "frozen_between_calls": true,
+  "advanced_exactly": 1234,
+  "sim_time_advanced": 0.6169910430908203,
+  "wall_ms_1234_steps": 113.521
+ },
+ "commanded": {
+  "n": 15,
+  "joint_tracking_max_rad": 0.689180554370092,
+  "joint_tracking_median_rad": 0.0334851032455184,
+  "fk_measured_vs_sim_position_median_m": 0.2412646729669064,
+  "fk_measured_vs_sim_position_max_m": 0.6868178032484143,
+  "fk_measured_vs_sim_rotation_median_rad": 0.27452694404194855,
+  "fk_target_vs_sim_position_median_m": 0.2670727674709388,
+  "fk_target_vs_sim_position_max_m": 0.7620944632969794
+ },
+ "ik": {
+  "n": 15,
+  "success": 15,
+  "model_residual_max_m": 5.31240105580766e-05,
+  "solve_ms_median": 0.029165999999999997,
+  "sim_residual_median_m": 0.19426258279783182,
+  "sim_residual_max_m": 0.3831812719088025
+ },
+ "jacobian_space_vs_finite_difference_max": 2.0292767466401074e-11,
+ "clamp": {
+  "base_pan": 2.9670597283903604
+ },
+ "camera_frame_320_jpeg": {
+  "round_trip_ms_median": 218.5011880355887,
+  "bytes_median": 8924.0,
+  "size": [
+   320,
+   180
+  ],
+  "capture_ms_median": 199.24377099999998,
+  "encode_ms_median": 17.16125
+ },
+ "camera_frame_640_png": {
+  "round_trip_ms": 449.1407920140773,
+  "bytes": 326600
+ },
+ "screenshot_keep_false": {
+  "round_trip_ms": 6315.102459047921,
+  "bytes": 3259690,
+  "file_left": false
+ }
+}

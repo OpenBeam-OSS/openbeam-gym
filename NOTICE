@@ -1,0 +1,7 @@
+openbeam-gym
+Copyright 2026 OpenBeam, LLC
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+openbeam_gym/robots/so101.draft.json describes the SO-101 arm (TheRobotStudio
+SO-ARM100, Apache-2.0) as OpenBeam builds it; joint limits come from its URDF.
