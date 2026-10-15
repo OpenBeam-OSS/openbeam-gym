@@ -42,6 +42,8 @@ class SceneConfig:
     robot_file: str | None = None              # spawn_vehicle {file} when no robot is present
     robot_position: list | None = None         # world position for that spawn
     install_path: str | None = None            # install_mod {path} before spawning (local games)
+    install_url: str | None = None             # or install_mod {url, sha256} (cloud games)
+    install_sha256: str | None = None
     spec: dict | None = None                   # robot_attach {spec} (an openbeam-robot/1 table)
     home: dict = field(default_factory=dict)   # joint name -> radians for reset; default mid-range
     settle_steps: int = 600                    # physics steps after moving to home (0.3 s)
@@ -121,6 +123,9 @@ class OpenBeamRobotEnv(gym.Env):
         if not have_robot and self.scene.robot_file:
             if self.scene.install_path:
                 self.game.call("install_mod", {"path": self.scene.install_path}, timeout=300)
+            elif self.scene.install_url:
+                self.game.call("install_mod", {"url": self.scene.install_url, "sha256": self.scene.install_sha256},
+                               timeout=300)
             args = {"file": self.scene.robot_file}
             if self.scene.robot_position:
                 args["position"] = self.scene.robot_position

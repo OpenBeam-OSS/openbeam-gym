@@ -1,0 +1,20 @@
+{
+ "timesteps": 16384,
+ "envs": 1,
+ "wall_s": 2315.3677949905396,
+ "env_steps_per_s": 7.076197579473618,
+ "first": {
+  "timesteps": 512,
+  "episodes": 12,
+  "mean_return_50": -29.58053866666667,
+  "success_rate_50": 0.25,
+  "wall_s": 76.1
+ },
+ "last": {
+  "timesteps": 16384,
+  "episodes": 381,
+  "mean_return_50": -18.478269200000003,
+  "success_rate_50": 0.28,
+  "wall_s": 2315.3
+ }
+}

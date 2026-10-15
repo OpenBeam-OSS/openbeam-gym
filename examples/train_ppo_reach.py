@@ -113,6 +113,8 @@ def main() -> None:
     ap.add_argument("--fake", type=int, default=0)
     ap.add_argument("--terrain", default="simple2.terrn2")
     ap.add_argument("--robot-file")
+    ap.add_argument("--install-url", help="install_mod this archive URL before spawning (with --install-sha256)")
+    ap.add_argument("--install-sha256")
     ap.add_argument("--robot-position", type=float, nargs=3)
     ap.add_argument("--control-hz", type=float, default=20.0)
     ap.add_argument("--timesteps", type=int, default=40000)
@@ -127,7 +129,8 @@ def main() -> None:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     scene = {"terrain": args.terrain, "robot_file": args.robot_file,
-             "robot_position": args.robot_position}
+             "robot_position": args.robot_position, "install_url": args.install_url,
+             "install_sha256": args.install_sha256}
     processes = []
     if args.fake:
         fns = [functools.partial(env_fake, args.control_hz, args.seed + i, reach) for i in range(args.fake)]
