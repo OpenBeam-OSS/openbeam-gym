@@ -28,7 +28,7 @@ PHYSICS_DT = 0.0005
 # openbeam_gym/robots/build_test_arm.py). install_mod takes it as it is.
 TEST_ARM_FILE = "openbeam_test_arm.jbeam"
 TEST_ARM_URL = "https://raw.githubusercontent.com/OpenBeam-OSS/openbeam-gym/main/assets/openbeam_test_arm.zip"
-TEST_ARM_SHA256 = "7fd51085c0ea5d6e51e92e624f61834fcfe7379424b0ff1e351d51f1410c0bf7"
+TEST_ARM_SHA256 = "1464f6b06318edb3c3abfc4385fa1690fbffe582c143729d67cc314d12e892a9"
 
 
 def quat_xyzw_to_matrix(q) -> np.ndarray:

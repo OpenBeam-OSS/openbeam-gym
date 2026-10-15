@@ -26,7 +26,8 @@ The arm is a vehicle package (``vehicles/openbeam_test_arm/``) that the game's
 
 The geometry is the earlier rotator test arm's: base pan about the vertical
 axis 0.2 m above the base, the shoulder 0.45 m up, the elbow 0.5 m out and
-the wrist roll 0.3 m beyond it, with the tool point 0.2 m past the wrist. The
+the wrist roll 0.3 m beyond it, with the tool point 0.2 m past the wrist (only the
+levers of the joint rings are longer, 16 cm, see LEVER). The
 masses (3 kg per node) and beams (400 kN/m, 200 N s/m) are also unchanged. So
 the Reach task and its PPO results stay comparable.
 
@@ -53,6 +54,12 @@ RATE = 1.0               # rad/s, joint speed
 # fixed-step stability budget at spawn, so this is an upper bound.
 TORSION_SPRING = 200000.0  # N m/rad
 TORSION_DAMP = 400.0       # N m s/rad
+# Lever radius of each joint's ring nodes. The game caps a bar's stiffness at
+# about m r^2 / h^2, so the levers are twice the rotator arm's 8 cm: with 8 cm
+# the arm sagged and swung enough that reaching a goal's joint values often
+# missed its point (an oracle reached 3 of 8 goals, the rotator arm 6 of 8;
+# 16 cm: 6 of 8).
+LEVER = 0.16
 
 # name, parent link, child link, axis point, axis direction, limits (deg).
 # Base frame: x forward (the reach), y left, z up, metres.
@@ -126,8 +133,8 @@ def build() -> Arm:
         for k in range(4):
             ang = k * math.pi / 2
             radial = add(mul(e1, math.cos(ang)), mul(e2, math.sin(ang)))
-            base.append(arm.node(f"{name}_p{k}", add(p, mul(axis, -0.03), mul(radial, 0.08)), parent))
-            moving.append(arm.node(f"{name}_c{k}", add(p, mul(axis, 0.03), mul(radial, 0.08)), child))
+            base.append(arm.node(f"{name}_p{k}", add(p, mul(axis, -0.03), mul(radial, LEVER)), parent))
+            moving.append(arm.node(f"{name}_c{k}", add(p, mul(axis, 0.03), mul(radial, LEVER)), child))
         axes[child] = (pos, neg)
         lo_r, hi_r = math.radians(lo), math.radians(hi)
         for k in range(4):
